@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Mnemonic hashing</title>
+<script src="nacl.min.js"></script>
+<script src="nacl-util.min.js"></script>
+<script src="words.js"></script>
+<script>
+  function readOnly (id) { document.getElementById(id).readOnly = true }
+
+  function setVal (id, val) { document.getElementById(id).value = val }
+
+  function getVal (id) { return document.getElementById(id).value.trim() }
+
+  function blank () { setVal('hash', '') }
+  
+  function hash () {
+    const text = getVal('text').trim()
+    const arr = []
+    for (let i = 0; i < text.length; i++) arr.push(text.charCodeAt(i))
+    setVal('hash', nacl.util.encodeBase64(nacl.hash(new Uint8Array(arr)).slice(0, 32)))
+  }
+
+  function initMnemonic () {
+    let text = ''
+    nacl.randomBytes(12).forEach((index) => { text += words[index % words.length] + ' ' })
+    setVal('text', text.trim())
+    readOnly('hash')
+  }
+
+  function copyText (id) {
+    document.getElementById(id).select()
+    document.execCommand('copy')
+  }
+</script>
+</head>
+<body onload="initMnemonic()">
+  <h2>Mnemonic hashing using the TweetNaCl.js SHA-512 Half hash</h2>
+  <p><table>
+  <tr>12 random words (or your choice of unique text):<br><textarea id="text" rows="10" cols="120" onfocus="blank()"></textarea></tr>
+  <tr>
+    <td><button onclick="hash()">Hash mnemonic text</button></td>
+    <td><button onclick="copyText('text')">Copy</button></td>
+  </tr>
+  </table></p>
+  <p>Hashed mnemonic (32 bytes, base64 encoded): <input type="text" id="hash" size="60">&nbsp;<button onclick="copyText('hash')">Copy</button></p>
+  <h3>Hashing instructions</h3>
+  <ol>
+  <li>A random set of 12 easy-to-remember English words is generated every time this page is refreshed.</li>
+  <li>This mnemonic text is hashed unless other text is entered instead.
+  Leading and trailing spaces are ignored in the text box.</li>
+  <li>Use the <i>Hash mnemonic</i> button to hash the text. Only the first 256 bits (32 bytes) of the SHA-512 hash are displayed.</li>
+  <li>The hashed mnemonic can be used as a secret
+  to <a href="./sign.html">digitially sign</a> or to <a href="./encrypt.html">encrypt</a>.</li>
+  </ol>
+  <br>
+</body></html>

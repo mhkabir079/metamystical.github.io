@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Encrypt</title>
+<script src="nacl.min.js"></script>
+<script src="nacl-util.min.js"></script>
+<script>
+  function setText (id, text) { document.getElementById(id).textContent = text }
+
+  function setVal (id, val) { document.getElementById(id).value = val }
+
+  function getVal (id) { return document.getElementById(id).value.trim() }
+
+  function blank () { setText('error', '') }
+
+  function encrypt () {
+    blank()
+    const nonce = nacl.randomBytes(24)
+    try {
+      const text = getVal('text').trim()
+      const encrypted = nacl.box.after(nacl.util.decodeUTF8(text), nonce, nacl.util.decodeBase64(getVal('ss')))
+      const noncencrypted = new Uint8Array(24 + encrypted.length)
+      noncencrypted.set(nonce)
+      noncencrypted.set(encrypted, 24)
+      setVal('text', nacl.util.encodeBase64(noncencrypted))
+    } catch (err) { setText('error', 'invalid secret') }
+  }
+
+  function decrypt () {
+    blank()
+    try {
+      const noncencrypted = nacl.util.decodeBase64(getVal('text').trim())
+      const nonce = noncencrypted.subarray(0, 24)
+      const encrypted = noncencrypted.subarray(24)
+      const decrypted = nacl.box.open.after(encrypted, nonce, nacl.util.decodeBase64(getVal('ss')))
+      setVal('text', nacl.util.encodeUTF8(decrypted))
+    } catch (err) { setText('error', 'invalid secret or base64 text message') }
+  }
+
+  function initSS () {
+    setVal('ss', nacl.util.encodeBase64(nacl.randomBytes(32)))
+  }
+
+  function copyText (id) {
+    document.getElementById(id).select()
+    document.execCommand('copy')
+  }
+</script>
+</head>
+<body onload="initSS()">
+  <h2>Encrypt using the TweetNaCl.js implementation of Salsa20 and Poly1305</h2>
+  <p>Secret (32 bytes, base64 encoding):&nbsp;<input type="text" id="ss" size="60" onfocus="blank()">&nbsp;<button onclick="copyText('ss')">Copy</button></p>
+  <p><table>
+  <tr>Text message to encrypt/decrypt:<br><textarea id="text" rows="10" cols="120" onfocus="blank()"></textarea></tr>
+  <tr>
+    <td><button onclick="encrypt()">Encrypt text (secret required)</button></td>
+    <td><button onclick="decrypt()">Decrypt text (secret required)</button></td>
+    <td><button onclick="copyText('text')">Copy</button></td>
+  </tr>
+  </table></p>
+  <p>Error: <span id="error"></span></p>
+  <h3>Secret instructions</h3>
+  <ol>
+  <li>A random <i>Secret</i> is generated every time this page is refreshed.</li>
+  <li>This <i>Secret</i> is used for encryption unless a predetermined secret is entered instead. For example,
+  a secret can be generated from an easy-to-remember list of words <a href="./hash.html">here</a>
+  and copied to the Secret field. Alternatively, if you want to someone else to know the secret
+  but the communication channel between you is unsecure, you can generate a shared secret
+  <a href="./secret.html">here</a> and copy it to the <i>Secret</i> field.</li>
+  <li>The same <i>Secret</i> used to encrypt a message is also used to decrypt it.
+  It should be securely stored and kept private unless you want someone else to be able to use it.</li>
+  </ol>
+  <h3>Encrypting instructions</h3>
+  <ol>
+  <li>Prepare the <i>Secret</i> (see above).</li>
+  <li>Type or paste UTF-8 encoded text into the text box. Leading and trailing spaces are ignored.</li>
+  <li>Use the <i>Encrypt</i> button to encrypt the text. The encrypted text replaces the original text.</li>
+  <li>Save the encrypted message or send it to someone else.</li>
+  </ol>
+  <h3>Decrypting instructions</h3>
+  <ol>
+  <li>Prepare the <i>Secret</i> (see above).</li>
+  <li>Paste the encrypted message into the text box. Leading and trailing spaces are ignored.</li>
+  <li>Use the <i>Decrypt</i> button to decrypt the text. The decrypted text replaces the encrypted text.</li>
+  </ol>
+  <br>
+</body></html>

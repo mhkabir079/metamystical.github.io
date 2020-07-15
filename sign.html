@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Digitally sign</title>
+<script src="nacl.min.js"></script>
+<script src="nacl-util.min.js"></script>
+<script>
+  function setText (id, text) { document.getElementById(id).textContent = text }
+
+  function setVal (id, val) { document.getElementById(id).value = val }
+
+  function getVal (id) { return document.getElementById(id).value.trim() }
+
+  function blank () {
+    setText('error', '')
+    setText('verified', '')
+  }
+  
+  function parseText () {
+    const text = getVal('text')
+    const lines = text.split('\n')
+    if (lines.length) {
+      const msig = lines[lines.length - 1].match(/^Signature: (.*)/)
+      lines.pop()
+      if (lines.length) {
+        if (!lines[lines.length - 1].length) lines.pop()
+        if (lines.length) {
+          const mpk = lines[lines.length - 1].match(/^Public key: (.*)/)
+          if (mpk && msig) {
+            lines.pop()
+            return { text: lines.join('\n').trim(), sig: msig[1], pk: mpk[1] }
+          }
+        }
+      }
+    }
+    return { text: text }
+  }
+
+  function sign () {
+    blank()
+    try {
+      const kp = nacl.sign.keyPair.fromSeed(nacl.util.decodeBase64(getVal('seed')))
+      const text = parseText().text
+      const sig = nacl.sign.detached(nacl.util.decodeUTF8(text), kp.secretKey)
+      setVal('text', text  + '\n\n' + 'Public key: ' + nacl.util.encodeBase64(kp.publicKey) + '\n' + 'Signature: ' + nacl.util.encodeBase64(sig))
+      verify()
+    } catch (err) { setText('error', 'invalid seed') }
+  }
+
+
+  function verify () {
+    blank()
+    try {
+      let v = 'no'
+      const parsed = parseText()
+      if (nacl.sign.detached.verify(nacl.util.decodeUTF8(parsed.text), nacl.util.decodeBase64(parsed.sig), nacl.util.decodeBase64(parsed.pk))) v = 'yes'
+      setText('verified', v)
+    } catch (err) { setText('error', 'invalid public key or signature') }
+  }
+
+  function initSeed () {
+    setVal('seed', nacl.util.encodeBase64(nacl.randomBytes(32)))
+  }
+
+  function copyText (id) {
+    document.getElementById(id).select()
+    document.execCommand('copy')
+  }
+</script>
+</head>
+<body onload="initSeed()">
+  <h2>Digitally sign using the TweetNaCl.js implementation of the Ed25519 DSA</h2>
+  <p>Secret (32 bytes, base64 encoding): <input type="text" id="seed" size="60" onfocus="blank()">&nbsp;<button onclick="copyText('seed')">Copy</button></p>
+  <p><table>
+  <tr>Text message to sign/verify:<br><textarea id="text" rows="10" cols="120" onfocus="blank()"></textarea></tr>
+  <tr>
+    <td><button onclick="sign()">Sign text (secret required)</button></td>
+    <td><button onclick="verify()">Verify text (embedded public key and signature required)</button></td>
+    <td><button onclick="copyText('text')">Copy</button></td>
+  </tr>
+  </table></p>
+  <p>Verified: <span id="verified"></span></p>
+  <p>Error: <span id="error"></span></p>
+  <h3>Secret instructions</h3>
+  <ol>
+  <li>A random <i>Secret</i> is generated every time this page is refreshed.</li>
+  <li>This <i>Secret</i> is used for signing unless a predetermined secret is entered instead.
+  For example, a secret can be generated from an easy-to-remember list of words <a href="./hash.html">here</a>
+  and copied to the Secret field.</li>
+  <li>The <i>Secret</i> should be securely stored and kept private because it is used to generate the secret key
+  and therefore may be needed to prove that you own the public key.</li>
+  </ol>
+  <h3>Signing instructions</h3>
+  <ol>
+  <li>Prepare the <i>Secret</i> (see above).</li>
+  <li>Type or paste UTF-8 encoded text into the text box. Leading and trailing spaces are ignored.</li>
+  <li>Use the <i>Sign</i> button to compute the signature, which is appended to the text along with the public key.</li>
+  <li>Send to the recipient the signed message including the appended public key and signature.</li>
+  </ol>
+  <h3>Verifying instructions</h3>
+  <ol>
+  <li>The <i>Secret</i> is not used for verification.</li>
+  <li>Paste the received signed message into the text box. Leading and trailing spaces are ignored.</li>
+  <li>Use the <i>Verify</i> button to confirm that the message was signed by the owner of the public key
+  and has not been altered since signing.</li>
+  </ol>
+  <br>
+</body></html>
