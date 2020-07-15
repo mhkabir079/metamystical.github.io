@@ -12,10 +12,7 @@
 
   function getVal (id) { return document.getElementById(id).value.trim() }
 
-  function blank () {
-    setText('error', '')
-    setText('verified', '')
-  }
+  function blank () { setText('status', '') }
   
   function parseText () {
     const text = getVal('text')
@@ -38,25 +35,22 @@
   }
 
   function sign () {
-    blank()
     try {
       const kp = nacl.sign.keyPair.fromSeed(nacl.util.decodeBase64(getVal('seed')))
       const text = parseText().text
       const sig = nacl.sign.detached(nacl.util.decodeUTF8(text), kp.secretKey)
       setVal('text', text  + '\n\n' + 'Public key: ' + nacl.util.encodeBase64(kp.publicKey) + '\n' + 'Signature: ' + nacl.util.encodeBase64(sig))
       verify()
-    } catch (err) { setText('error', 'invalid seed') }
+    } catch (err) { setText('status', 'invalid secret') }
   }
 
 
   function verify () {
     blank()
     try {
-      let v = 'no'
       const parsed = parseText()
-      if (nacl.sign.detached.verify(nacl.util.decodeUTF8(parsed.text), nacl.util.decodeBase64(parsed.sig), nacl.util.decodeBase64(parsed.pk))) v = 'yes'
-      setText('verified', v)
-    } catch (err) { setText('error', 'invalid public key or signature') }
+      if (nacl.sign.detached.verify(nacl.util.decodeUTF8(parsed.text), nacl.util.decodeBase64(parsed.sig), nacl.util.decodeBase64(parsed.pk))) setText('status', 'verified')
+    } catch (err) { }
   }
 
   function initSeed () {
@@ -73,15 +67,13 @@
   <h2>Digitally sign using the TweetNaCl.js implementation of the Ed25519 DSA</h2>
   <p>Secret (32 bytes, base64 encoding): <input type="text" id="seed" size="60" onfocus="blank()">&nbsp;<button onclick="copyText('seed')">Copy</button></p>
   <p><table>
-  <tr>Text message to sign/verify:<br><textarea id="text" rows="10" cols="120" onfocus="blank()"></textarea></tr>
+  <tr>Text message to sign/verify:<br><textarea id="text" rows="10" cols="120" oninput="verify()"></textarea></tr>
   <tr>
-    <td><button onclick="sign()">Sign text (secret required)</button></td>
-    <td><button onclick="verify()">Verify text (embedded public key and signature required)</button></td>
+    <td><button onclick="sign()">Sign</button></td>
     <td><button onclick="copyText('text')">Copy</button></td>
   </tr>
   </table></p>
-  <p>Verified: <span id="verified"></span></p>
-  <p>Error: <span id="error"></span></p>
+  <p>Status: <span id="status"></span></p>
   <h3>Secret instructions</h3>
   <ol>
   <li>A random <i>Secret</i> is generated every time this page is refreshed.</li>
@@ -102,8 +94,8 @@
   <ol>
   <li>The <i>Secret</i> is not used for verification.</li>
   <li>Paste the received signed message into the text box. Leading and trailing spaces are ignored.</li>
-  <li>Use the <i>Verify</i> button to confirm that the message was signed by the owner of the public key
-  and has not been altered since signing.</li>
+  <li>If the message was signed by the owner of the public key and has not been altered since signing,
+  the <i>Status:</i> field will indicate <i>verified</i>.</li>
   </ol>
   <br>
 </body></html>
