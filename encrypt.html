@@ -49,7 +49,7 @@
 </script>
 </head>
 <body onload="initSS()">
-  <h2>Encrypt using the TweetNaCl.js implementation of Salsa20 and Poly1305</h2>
+  <h3>Encrypt using the TweetNaCl.js implementation of Salsa20 and Poly1305</h3>
   <p>Secret (32 bytes, base64 encoding):&nbsp;<input type="text" id="ss" size="60" onfocus="blank()">&nbsp;<button onclick="copyText('ss')">Copy</button></p>
   <p><table>
   <tr>Text message to encrypt/decrypt:<br><textarea id="text" rows="10" cols="120" onfocus="blank()"></textarea></tr>
@@ -60,7 +60,7 @@
   </tr>
   </table></p>
   <p>Error: <span id="error"></span></p>
-  <h3>Secret instructions</h3>
+  <h4>Secret instructions</h4>
   <ol>
   <li>A random <i>Secret</i> is generated every time this page is refreshed.</li>
   <li>This <i>Secret</i> is used for encryption unless a predetermined secret is entered instead. For example,
@@ -71,14 +71,14 @@
   <li>The same <i>Secret</i> used to encrypt a message is also used to decrypt it.
   It should be securely stored and kept private unless you want someone else to be able to use it.</li>
   </ol>
-  <h3>Encrypting instructions</h3>
+  <h4>Encrypting instructions</h4>
   <ol>
   <li>Prepare the <i>Secret</i> (see above).</li>
   <li>Type or paste UTF-8 encoded text into the text box. Leading and trailing spaces are ignored.</li>
   <li>Use the <i>Encrypt</i> button to encrypt the text. The encrypted text replaces the original text.</li>
   <li>Save the encrypted message or send it to someone else.</li>
   </ol>
-  <h3>Decrypting instructions</h3>
+  <h4>Decrypting instructions</h4>
   <ol>
   <li>Prepare the <i>Secret</i> (see above).</li>
   <li>Paste the encrypted message into the text box. Leading and trailing spaces are ignored.</li>

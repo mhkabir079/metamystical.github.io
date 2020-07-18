@@ -64,7 +64,7 @@
 </script>
 </head>
 <body onload="initSeed()">
-  <h2>Digitally sign using the TweetNaCl.js implementation of the Ed25519 DSA</h2>
+  <h3>Digitally sign using the TweetNaCl.js implementation of the Ed25519 DSA</h3>
   <p>Secret (32 bytes, base64 encoding): <input type="text" id="seed" size="60" onfocus="blank()">&nbsp;<button onclick="copyText('seed')">Copy</button></p>
   <p><table>
   <tr>Text message to sign/verify:<br><textarea id="text" rows="10" cols="120" oninput="verify()"></textarea></tr>
@@ -74,7 +74,7 @@
   </tr>
   </table></p>
   <p>Status: <span id="status"></span></p>
-  <h3>Secret instructions</h3>
+  <h4>Secret instructions</h4>
   <ol>
   <li>A random <i>Secret</i> is generated every time this page is refreshed.</li>
   <li>This <i>Secret</i> is used for signing unless a predetermined secret is entered instead.
@@ -83,14 +83,14 @@
   <li>The <i>Secret</i> should be securely stored and kept private because it is used to generate the secret key
   and therefore may be needed to prove that you own the public key.</li>
   </ol>
-  <h3>Signing instructions</h3>
+  <h4>Signing instructions</h4>
   <ol>
   <li>Prepare the <i>Secret</i> (see above).</li>
   <li>Type or paste UTF-8 encoded text into the text box. Leading and trailing spaces are ignored.</li>
   <li>Use the <i>Sign</i> button to compute the signature, which is appended to the text along with the public key.</li>
   <li>Send to the recipient the signed message including the appended public key and signature.</li>
   </ol>
-  <h3>Verifying instructions</h3>
+  <h4>Verifying instructions</h4>
   <ol>
   <li>The <i>Secret</i> is not used for verification.</li>
   <li>Paste the received signed message into the text box. Leading and trailing spaces are ignored.</li>

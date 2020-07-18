@@ -36,7 +36,7 @@
 </script>
 </head>
 <body onload="initMnemonic()">
-  <h2>Mnemonic hashing using the TweetNaCl.js SHA-512 Half hash</h2>
+  <h3>Mnemonic hashing using the TweetNaCl.js SHA-512 Half hash</h3>
   <p><table>
   <tr>12 random words (or your choice of unique text):<br><textarea id="text" rows="10" cols="120" onfocus="blank()"></textarea></tr>
   <tr>
@@ -45,7 +45,7 @@
   </tr>
   </table></p>
   <p>Hashed mnemonic (32 bytes, base64 encoded): <input type="text" id="hash" size="60">&nbsp;<button onclick="copyText('hash')">Copy</button></p>
-  <h3>Hashing instructions</h3>
+  <h4>Hashing instructions</h4>
   <ol>
   <li>A random set of 12 easy-to-remember English words is generated every time this page is refreshed.</li>
   <li>This mnemonic text is hashed unless other text is entered instead.

@@ -5,12 +5,12 @@
 <title>TweetNaCl.js tools</title>
 </head>
 <body onload="initSeed()">
-  <h2>TweetNaCl.js cryptographic tools</h2>
+  <h3>TweetNaCl.js cryptographic tools</h3>
   <h5><a href="./sign.html">Digitally sign using Ed25519</a></h6>
   <h5><a href="./encrypt.html">Encrypt using Salsa20 and Poly1305</a></h6>
   <h5><a href="./secret.html">Generate a shared secret using Curve22519</a></h6>
   <h5><a href="./hash.html">Hash a mnemonic using SHA-512 Half</a></h6>
-  <h3>Security note</h3>
+  <h4>Security note</h4>
   <p>The above HTML pages, once served to your computer, have no further communication
   with the server or any other entity. No cookies or local data storage are created when
   the pages run in your browser. Therefore, secret data exist only temporarily within
@@ -26,9 +26,9 @@
   <li><a href="https://github.com/dchest/tweetnacl-util-js/releases/tag/v0.15.0">tweetnacl-util-js v0.15.0</a></li>
   </ul>
   <p>TweetNaCl.js was ported from <a href="http://tweetnacl.cr.yp.to/">TweetNaCl</a> / <a href="http://nacl.cr.yp.to/">NaCl.</a></p>
-  <h3>Source code</h3>
+  <h4>Source code</h4>
   <a href="https://github.com/metamystical/metamystical.github.io">Github</a>
-  <h3>Base 64 and hexadecimal encoding/decoding tools in Linux</h3>
+  <h4>Base 64 and hexadecimal encoding/decoding tools in Linux</h4>
   <code>
   $ echo -n '0123456789abcdef' | xxd -r -p | base64 # ASNFZ4mrze8=<br>
   $ echo -n 'ASNFZ4mrze8=' | base64 -d | xxd -p # 0123456789abcdef
