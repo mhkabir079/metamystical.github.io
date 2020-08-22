@@ -13,8 +13,6 @@
 
   function getVal (id) { return document.getElementById(id).value.trim() }
 
-  function blank () { setVal('hash', '') }
-  
   function hash () {
     const text = getVal('text').trim()
     const arr = []
@@ -27,6 +25,7 @@
     nacl.randomBytes(12).forEach((index) => { text += words[index % words.length] + ' ' })
     setVal('text', text.trim())
     readOnly('hash')
+    hash()
   }
 
   function copyText (id) {
@@ -38,9 +37,8 @@
 <body onload="initMnemonic()">
   <h3>Mnemonic hashing using the TweetNaCl.js SHA-512 Half hash</h3>
   <p><table>
-  <tr>12 random words (or your choice of unique text):<br><textarea id="text" rows="10" cols="120" onfocus="blank()"></textarea></tr>
+  <tr>12 random words (or your choice of unique text):<br><textarea id="text" rows="10" cols="120" oninput="hash()"></textarea></tr>
   <tr>
-    <td><button onclick="hash()">Hash mnemonic text</button></td>
     <td><button onclick="copyText('text')">Copy</button></td>
   </tr>
   </table></p>
@@ -48,9 +46,9 @@
   <h4>Hashing instructions</h4>
   <ol>
   <li>A random set of 12 easy-to-remember English words is generated every time this page is refreshed.</li>
-  <li>This mnemonic text is hashed unless other text is entered instead.
+  <li>This mnemonic text is automatically hashed unless other text is entered instead.
   Leading and trailing spaces are ignored in the text box.</li>
-  <li>Use the <i>Hash mnemonic</i> button to hash the text. Only the first 256 bits (32 bytes) of the SHA-512 hash are displayed.</li>
+  <li>Only the first 256 bits (32 bytes) of the SHA-512 hash are displayed.</li>
   <li>The hashed mnemonic can be used as a secret
   to <a href="./sign.html">digitially sign</a> or to <a href="./encrypt.html">encrypt</a>.</li>
   </ol>
