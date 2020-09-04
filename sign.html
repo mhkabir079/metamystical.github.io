@@ -64,7 +64,7 @@
 </head>
 <body onload="initSecret()">
   <h3>Digitally sign using the TweetNaCl.js implementation of the Ed25519 DSA</h3>
-  <p>Secret (32 bytes, base64 encoding): <input type="text" id="secret" size="60" onfocus="blank()">&nbsp;<button onclick="copyText('seed')">Copy</button></p>
+  <p>Secret (32 bytes, base64 encoding): <input type="text" id="secret" size="60" onfocus="blank()">&nbsp;<button onclick="copyText('secret')">Copy</button></p>
   <p><table>
   <tr>Text message to sign/verify:<br><textarea id="text" rows="10" cols="120" oninput="verify()"></textarea></tr>
   <tr>
